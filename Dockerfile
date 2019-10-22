@@ -11,6 +11,7 @@ RUN pip install fastai
 RUN pip install starlette uvicorn python-multipart aiohttp
 
 ADD app.py /app/app.py
+ADD cli.py /app/cli.py
 ADD export.pkl export.pkl
 
 # Run it once to trigger resnet download
@@ -19,4 +20,5 @@ RUN python /app/app.py
 EXPOSE 8008
 
 # Start the server
-CMD ["python", "/app/app.py", "serve"]
+# CMD ["python", "/app/app.py", "serve"]
+ENTRYPOINT ["python", "/app/cli.py"]
