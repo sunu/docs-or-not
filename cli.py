@@ -1,5 +1,6 @@
 import pathlib
 import os
+import stat
 from io import BytesIO
 from shutil import copyfile
 import sys
@@ -36,9 +37,14 @@ def filter_dir(path, outdir, root_src):
             if check_if_doc(path):
                 rel_path = path.relative_to(root_src)
                 dest = pathlib.Path(outdir).joinpath(rel_path)
-                os.makedirs(os.path.dirname(dest), exist_ok=True)
+                st = os.stat(path)
+                dir_path = os.path.dirname(dest)
+                if not os.path.isdir(dir_path):
+                    os.makedirs(dir_path)
+                    os.chown(dir_path, st[stat.ST_UID], st[stat.ST_GID])
                 copyfile(path, dest)
-                print(f'Copied {path} to {dest}')
+                os.chown(dest, st[stat.ST_UID], st[stat.ST_GID])
+                print(f'Copied $SRC/{rel_path} to $DEST/{rel_path}')
         if os.path.isdir(path):
             filter_dir(root.joinpath(item), outdir, root_src)
 
