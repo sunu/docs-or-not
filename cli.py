@@ -76,16 +76,20 @@ def filter_inplace(path, root_src):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-        print("Need 3 arguments: the command (filter or filter_inplace), the source directory and the destination")  # noqa
+    if len(sys.argv) not in (3, 4):
+        print("""
+            Usage: python cli.py filter /path/to/src /path/to/dest
+            Or
+            python cli.py filter_inplace /path/to/src
+        """)
         sys.exit(0)
+    command = sys.argv[1]
     source = pathlib.Path(sys.argv[2])
     assert source.exists()
-    dest = pathlib.Path(sys.argv[3])
-    assert dest.exists()
-    command = sys.argv[1]
     assert command in ('filter', 'filter_inplace')
     if command == 'filter':
+        dest = pathlib.Path(sys.argv[3])
+        assert dest.exists()
         filter_dir(source, dest, source)
     elif command == 'filter_inplace':
         filter_inplace(source, source)

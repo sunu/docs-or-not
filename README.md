@@ -7,3 +7,7 @@ Detects if a picture is a picture of a document or not. Filters out pictures of 
 - Run `make build` to build the docker image
 - Run `make filter src="/path/to/source" dest="/path/to/destination"` to copy pictures of documents from the source
 folder to the destination folder. The folder structure is retained while copying.
+
+Or
+
+- Run `make filter_inplace src="/path/to/source"` to delete non-document images from the source folder.
