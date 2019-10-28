@@ -52,6 +52,7 @@ def filter_dir(path, outdir, root_src):
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Need 2 arguments: the source directory and the destination")
+        sys.exit(0)
     source = pathlib.Path(sys.argv[1])
     assert source.exists()
     dest = pathlib.Path(sys.argv[2])

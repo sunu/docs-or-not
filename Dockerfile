@@ -8,16 +8,16 @@ RUN pip3 install torch==1.3.0+cpu torchvision==0.4.1+cpu -f https://download.pyt
 RUN pip install fastai
 
 # Install starlette and uvicorn
-RUN pip install starlette uvicorn python-multipart aiohttp
+# RUN pip install starlette uvicorn python-multipart aiohttp
 
 ADD export.pkl export.pkl
-ADD app.py /app/app.py
+# ADD app.py /app/app.py
 ADD cli.py /app/cli.py
 
 # Run it once to trigger resnet download
-RUN python /app/app.py
+RUN python /app/cli.py
 
-EXPOSE 8008
+# EXPOSE 8008
 
 # Start the server
 # CMD ["python", "/app/app.py", "serve"]
