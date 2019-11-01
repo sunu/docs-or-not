@@ -37,7 +37,7 @@ def check_if_img(fp):
         img = open_image(img)
         return img
     except Exception:
-        print("Failed to open %s as an image" % fp.name)
+        # print("Failed to open %s as an image" % fp.name)
         return False
 
 
