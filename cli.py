@@ -24,10 +24,15 @@ def check_if_doc_img(path):
         img = check_if_img(fp)
         if img is False:
             return Result(is_img=False, is_doc_img=False)
-        _, _, losses = learner.predict(img)
-        predictions = dict(zip(learner.data.classes, map(float, losses)))
-        if predictions[DOC_LABEL] > DOC_THRESHOLD:
-            return Result(is_img=True, is_doc_img=True)
+        try:
+            _, _, losses = learner.predict(img)
+            predictions = dict(zip(learner.data.classes, map(float, losses)))
+            if predictions[DOC_LABEL] > DOC_THRESHOLD:
+                return Result(is_img=True, is_doc_img=True)
+        except Exception:
+            # don't have enough memory to make a prediction.
+            # Let's just bail and say it's not an image
+            return Result(is_img=False, is_doc_img=False)
         return Result(is_img=True, is_doc_img=False)
 
 
