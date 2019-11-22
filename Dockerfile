@@ -11,6 +11,7 @@ RUN pip install fastai
 # RUN pip install starlette uvicorn python-multipart aiohttp
 
 ADD export.pkl export.pkl
+ADD export-v2.pkl export-v2.pkl
 # ADD app.py /app/app.py
 ADD cli.py /app/cli.py
 

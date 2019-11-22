@@ -1,6 +1,7 @@
 import pathlib
 import os
 import stat
+import imghdr
 from io import BytesIO
 from shutil import copyfile
 import sys
@@ -10,9 +11,10 @@ import collections
 from fastai.vision import load_learner, open_image
 
 MODEL_PATH = os.getenv('MODEL_PATH') or '.'
-learner = load_learner(MODEL_PATH)
+learner1 = load_learner(MODEL_PATH)
+learner2 = load_learner(MODEL_PATH, file='export-v2.pkl')
 DOC_LABEL = 'docs'
-DOC_THRESHOLD = 0.5
+DOC_THRESHOLD = 0.99
 warnings.filterwarnings("ignore", category=UserWarning, module="torch.nn.functional")  # noqa
 
 
@@ -20,14 +22,21 @@ Result = collections.namedtuple("Result", "is_img, is_doc_img")
 
 
 def check_if_doc_img(path):
+    type_ = imghdr.what(path)
+    if type_ is None:
+        return Result(is_img=False, is_doc_img=False)
+    if type_ == 'gif':
+        return Result(is_img=True, is_doc_img=False)
     with open(path, 'rb') as fp:
         img = check_if_img(fp)
         if img is False:
             return Result(is_img=False, is_doc_img=False)
         try:
-            _, _, losses = learner.predict(img)
-            predictions = dict(zip(learner.data.classes, map(float, losses)))
-            if predictions[DOC_LABEL] > DOC_THRESHOLD:
+            _, _, losses = learner1.predict(img)
+            predictions1 = dict(zip(learner1.data.classes, map(float, losses)))
+            _, _, losses = learner2.predict(img)
+            predictions2 = dict(zip(learner2.data.classes, map(float, losses)))
+            if predictions1[DOC_LABEL] > DOC_THRESHOLD and predictions2[DOC_LABEL] > DOC_THRESHOLD:  # noqa
                 return Result(is_img=True, is_doc_img=True)
         except Exception:
             # don't have enough memory to make a prediction.
